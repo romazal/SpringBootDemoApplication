@@ -301,7 +301,7 @@ class StudentServiceTest {
     }
 
     @Test
-    public void should_successfully_delete_a_students_by_id() {
+    public void should_successfully_delete_a_student_by_id() {
         Integer studentId = 2;
 
         Student student1 = new Student(
@@ -330,14 +330,20 @@ class StudentServiceTest {
 
         List<Student> students = new ArrayList<>(Arrays.asList(student1, student2, student3));
 
+        int initialSize = students.size();
+
         doAnswer(invocationOnMock -> {
             students.removeIf(student -> student.getId().equals(studentId));
             return null;
         }).when(studentRepository).deleteById(studentId);
 
+
         studentService.deleteStudent(studentId);
 
+
         verify(studentRepository, times(1)).deleteById(studentId);
+
+        assertNotEquals(students.size(), initialSize);
 
         for(Student student : students) {
             assertNotEquals(studentId, student.getId());
